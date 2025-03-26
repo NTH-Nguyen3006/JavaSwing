@@ -126,7 +126,7 @@ public class Bai2 extends javax.swing.JFrame {
             }
         });
 
-        updateUserBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\update (Custom).png")); // NOI18N
+        updateUserBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\update.png")); // NOI18N
         updateUserBtn.setText("Sửa");
         updateUserBtn.setEnabled(false);
         updateUserBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -135,7 +135,7 @@ public class Bai2 extends javax.swing.JFrame {
             }
         });
 
-        DeleteUserBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\delete (Custom).png")); // NOI18N
+        DeleteUserBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\delete.png")); // NOI18N
         DeleteUserBtn.setText("Xóa");
         DeleteUserBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,7 +143,7 @@ public class Bai2 extends javax.swing.JFrame {
             }
         });
 
-        SaveDatabaseBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\save (Custom).png")); // NOI18N
+        SaveDatabaseBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\save.png")); // NOI18N
         SaveDatabaseBtn.setText("Lưu");
         SaveDatabaseBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -271,7 +271,7 @@ public class Bai2 extends javax.swing.JFrame {
                             .addComponent(DeleteUserBtn)
                             .addComponent(updateUserBtn))))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
         );
 
         pack();
