@@ -1,12 +1,12 @@
-package Assignment1.control;
+package Assignment.control;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 
-import Assignment1.dto.Users;
-import Assignment1.oauth.Authentication;
+import Assignment.dto.Users;
+import Assignment.oauth.Authentication;
 import Extension.Actions;
 
 import javax.swing.*;

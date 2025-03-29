@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package Assignment1.control;
+package Assignment.control;
 
-import Assignment1.dto.Students;
+import Assignment.dto.Students;
 import Extension.Actions;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,16 +12,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import Assignment1.dao.StudentsDAO;
+import Assignment.dao.StudentsDAO;
 
 /**
  *
@@ -31,7 +28,7 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
 
     @Override
     public void run() {
-        main(null);
+        main(new String[]{});
     }
 
     /**
@@ -320,10 +317,8 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
                 filePath = file.getAbsolutePath();
                 System.out.println(filePath);
                 image = ImageIO.read(file);
-                Graphics2D graphics2D = image.createGraphics();
-                graphics2D.drawImage(image, 0, 0, 150, 160, null);
-                graphics2D.dispose();
-                imageLabel.setIcon(new ImageIcon(image));
+                Image img = image.getScaledInstance(150, 160, BufferedImage.SCALE_DEFAULT);
+                imageLabel.setIcon(new ImageIcon(img));
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -339,7 +334,7 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
         String fileName = String.format("avatar_%s.png", idField.getText());
-        String pathToSaveImage = String.format("assets/upload/%s", fileName);
+        String pathToSaveImage = pathUpload + "\\" + fileName;
         StudentsDAO.saveStudentToDB(new Students(
                 idField.getText(), nameField.getText(), emailField.getText(), phoneField.getText(),
                 addressField.getText(), fileName, MaleChoose.isSelected()));
@@ -350,23 +345,22 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_saveBtnActionPerformed
 
-    void fillDataToTable(List<Students> students) {
-        Actions.fillToTable(tableStudents, students.stream().map(
-            st -> new Object[] {
-                st.getMASV(), st.getHoten(), st.getEmail(), st.getSoDT(),
-                st.isGioitinh()?"Nam" : "Nữ", st.getDiachi(), st.getHinh()
-        }).collect(Collectors.toList()));
-    }
-
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-        String fileName = String.format("avatar_%s.png", idField.getText());
-        String pathToSaveImage = String.format("assets/upload/%s", fileName);
+        String fileName = String.format("avatar_%s.png", idField.getText().toLowerCase());
+        String pathToSaveImage = pathUpload + "\\" + fileName;
         StudentsDAO.updateStudentDB(new Students(
                 idField.getText(), nameField.getText(), emailField.getText(), phoneField.getText(),
                 addressField.getText(), fileName, MaleChoose.isSelected())
         );
+
         try {
-            ImageIO.write(image, "png", new File(pathToSaveImage));
+            BufferedImage outputImage = new BufferedImage(150, 160, image.getType());
+            Graphics2D g2d = outputImage.createGraphics();
+            g2d.drawImage(image.getScaledInstance(150, 160, Image.SCALE_SMOOTH), 0, 0, 150, 160, null);
+            g2d.dispose();
+            System.out.println(pathToSaveImage);
+            ImageIO.write(outputImage, "png", new File(pathToSaveImage));
+            imageLabel.repaint();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -386,15 +380,24 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
         MaleChoose.setSelected(true);
 
         if (!st.isGioitinh()) femaleChoose.setSelected(true);
-        String pathUpload = Paths.get("", "src\\main\\java\\Assignment1\\assets\\upload",
-                        st.getHinh()).toAbsolutePath().toString();
-        imageLabel.setIcon(new ImageIcon(pathUpload));
+        imageLabel.setIcon(new ImageIcon(
+                pathUpload + "\\" + st.getHinh()));
     }//GEN-LAST:event_tableStudentsMouseClicked
+
+    void fillDataToTable(List<Students> students) {
+        Actions.fillToTable(tableStudents, students.stream().map(
+                st -> new Object[] {
+                        st.getMASV(), st.getHoten(), st.getEmail(), st.getSoDT(),
+                        st.isGioitinh()?"Nam" : "Nữ", st.getDiachi(), st.getHinh()
+                }).collect(Collectors.toList()));
+    }
+
 
     BufferedImage image = null;
     String filePath = "";
     List<Students> studentsList = new ArrayList<>();
-
+    final String pathUpload = Paths.get("", "src\\main\\java\\Assignment\\assets\\upload")
+            .toAbsolutePath().toString();
     /**
      * @param args the command line arguments
      */

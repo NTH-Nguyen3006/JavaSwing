@@ -1,4 +1,4 @@
-package Assignment1.dao;
+package Assignment.dao;
 
 import Extension.Sql.Sql;
 

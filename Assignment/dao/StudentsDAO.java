@@ -1,6 +1,6 @@
-package Assignment1.dao;
+package Assignment.dao;
 
-import Assignment1.dto.Students;
+import Assignment.dto.Students;
 import Extension.Sql.Cursor;
 
 import java.util.List;

@@ -1,6 +1,6 @@
-package Assignment1;
+package Assignment;
 
-import Assignment1.control.*;
+import Assignment.control.*;
 
 public class Application {
     Thread t1;

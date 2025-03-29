@@ -1,6 +1,6 @@
-package Assignment1.dao;
+package Assignment.dao;
 
-import Assignment1.dto.Grade;
+import Assignment.dto.Grade;
 import Extension.Sql.Cursor;
 
 public class GradeDAO {

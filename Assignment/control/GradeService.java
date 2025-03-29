@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package Assignment1.control;
+package Assignment.control;
 
 /**
  *
@@ -12,7 +12,7 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
 
     @Override
     public void run() {
-        main(null);
+        main(new String[]{});
     }
 
     /**

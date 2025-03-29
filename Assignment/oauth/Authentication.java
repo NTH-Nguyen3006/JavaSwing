@@ -1,7 +1,7 @@
-package Assignment1.oauth;
+package Assignment.oauth;
 
-import Assignment1.dao.UsersDAO;
-import Assignment1.dto.Users;
+import Assignment.dao.UsersDAO;
+import Assignment.dto.Users;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

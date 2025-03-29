@@ -1,4 +1,4 @@
-package Assignment1.dto;
+package Assignment.dto;
 
 public class Students {
     private String MASV, Hoten, Email, SoDT;
