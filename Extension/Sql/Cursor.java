@@ -60,16 +60,15 @@ public class Cursor {
             else if (field.getType() == double.class)
                 return (double) columnData;
 
-
             return columnData;
         } catch (Exception e) {
             return columnData;
         }
     }
 
-    private void InjectDataToClass () {
-
-    }
+//    private void InjectDataToClass () {
+//
+//    }
 
     private <O> List<?> getRowData() throws SQLException, NoSuchFieldException {
         List<Object> listData = new ArrayList<>();
