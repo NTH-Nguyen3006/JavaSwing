@@ -3,7 +3,12 @@ package Assignment.dao;
 import Assignment.dto.Students;
 import Extension.Sql.Cursor;
 
+import java.beans.Statement;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class StudentsDAO {
     private static final Cursor cursorStudents = MyConnection.connect.Cursor(Students.class);
@@ -48,5 +53,25 @@ public class StudentsDAO {
     public static void deleteStudentById(String id) {
         cursorStudents.execute(
                 "DELETE FROM STUDENTS WHERE MASV = ?", id);
+    }
+
+    public static void deleteStudents(Students[] students) {
+        Object[][] studentIds = Arrays.stream(students)
+                .map(st -> new String[]{st.getMASV()}).toArray(Object[][]::new);
+
+        try {
+            CallableStatement callableStatement = cursorStudents.getConnection()
+                    .prepareCall("{Call deleteStudents(?)}");
+            for (Students st : students) {
+                callableStatement.setString(1, st.getMASV());
+                callableStatement.addBatch();
+            }
+            System.out.printf("Đã có %d dòng dữ liệu bị tác động.\n",
+                    callableStatement.executeBatch().length);
+            callableStatement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

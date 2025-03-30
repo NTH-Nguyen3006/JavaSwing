@@ -18,6 +18,15 @@ public class Students {
         Gioitinh = gioitinh;
     }
 
+    public void updateStudent(String hoten, String email, String soDT, String diachi, String hinh, boolean gioitinh) {
+        Hoten = hoten;
+        Email = email;
+        SoDT = soDT;
+        Diachi = diachi;
+        Hinh = hinh;
+        Gioitinh = gioitinh;
+    }
+
     public String getMASV() {
         return MASV;
     }

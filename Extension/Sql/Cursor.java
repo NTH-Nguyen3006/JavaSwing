@@ -15,6 +15,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class Cursor {
@@ -157,25 +158,30 @@ public class Cursor {
 
     }
 
-    public Cursor executeMany(String query, Object[][] objects) throws SQLException, NoSuchFieldException {
-        pprstm = connection.prepareStatement(query);
-        if (query.startsWith("update"))
-            return execute(query, objects[0]);
-        else{
-            for (Object[] objs : objects) {
-                for (int i = 0; i < objs.length; i++)
-                    pprstm.setObject(i+1, objs[i]);
-                pprstm.addBatch();
-                pprstm.executeBatch();
+    public Cursor executeMany(String query, Object[][] objects) {
+        try {
+            pprstm = connection.prepareStatement(query);
+            if (query.startsWith("Select"))
+                return execute(query, objects[0]);
+            else{
+                for (Object[] objs : objects) {
+                    for (int i = 0; i < objs.length; i++)
+                        pprstm.setObject(i+1, objs[i]);
+                    pprstm.addBatch();
+                }
+                int[] indexes = pprstm.executeBatch();
+                Logger.getLogger(String.format("Đã có %d dòng dữ liệu bị tác động.", indexes.length));
+                return null;
             }
+        } catch (SQLException e) {
+            Logger.getLogger(e.getMessage());
             return null;
         }
     }
 
-//    public  setForeignTable() {
-//
-//
-//    }
+    public Connection getConnection() {
+        return this.connection;
+    }
 
     public Object fetchOne() {
         if (data.isEmpty()) return null;

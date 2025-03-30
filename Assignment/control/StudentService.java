@@ -9,12 +9,14 @@ import Extension.Actions;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,6 +129,11 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
                 return canEdit [columnIndex];
             }
         });
+        tableStudents.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                tableStudentsMouseDragged(evt);
+            }
+        });
         tableStudents.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableStudentsMouseClicked(evt);
@@ -152,6 +159,7 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
 
         deleteBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\delete.png")); // NOI18N
         deleteBtn.setText("Delete");
+        deleteBtn.setEnabled(false);
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteBtnActionPerformed(evt);
@@ -160,6 +168,7 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
 
         updateBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\update.png")); // NOI18N
         updateBtn.setText("Update");
+        updateBtn.setEnabled(false);
         updateBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 updateBtnActionPerformed(evt);
@@ -329,45 +338,82 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
 
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
         Actions.resetTextField(nameField, idField, emailField, phoneField, addressField);
+        idField.setEnabled(true);
         MaleChoose.setSelected(true);
+        saveBtn.setEnabled(true);
+        imageLabel.setIcon(null);
     }//GEN-LAST:event_newBtnActionPerformed
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-        String fileName = String.format("avatar_%s.png", idField.getText());
-        String pathToSaveImage = pathUpload + "\\" + fileName;
-        StudentsDAO.saveStudentToDB(new Students(
-                idField.getText(), nameField.getText(), emailField.getText(), phoneField.getText(),
-                addressField.getText(), fileName, MaleChoose.isSelected()));
-        try {
-            ImageIO.write(image, "png", new File(pathToSaveImage));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        String fileName = null;
+        if (image != null) {
+            fileName = String.format("avatar_%s.png", idField.getText());
+            String pathToSaveImage = pathUpload + "\\" + fileName;
+            try {
+                BufferedImage outputImage = new BufferedImage(150, 160, image.getType());
+                Graphics2D g2d = outputImage.createGraphics();
+                g2d.drawImage(image.getScaledInstance(150, 160, Image.SCALE_SMOOTH),
+                        0, 0, 150, 160, null);
+                g2d.dispose();
+                ImageIO.write(outputImage, "png", new File(pathToSaveImage));
+                image = null;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+        Students newStudent = new Students(
+                idField.getText(), nameField.getText(), emailField.getText(), phoneField.getText(),
+                addressField.getText(), fileName, MaleChoose.isSelected());
+
+        studentsList.add(newStudent);
+        fillDataToTable(studentsList);
+        StudentsDAO.saveStudentToDB(newStudent);
+        reloadUI();
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
         String fileName = String.format("avatar_%s.png", idField.getText().toLowerCase());
-        String pathToSaveImage = pathUpload + "\\" + fileName;
+        if (image != null) {
+            String pathToSaveImage = pathUpload + "\\" + fileName;
+            new File(pathToSaveImage).delete();
+            try {
+                BufferedImage outputImage = new BufferedImage(150, 160, image.getType());
+                Graphics2D g2d = outputImage.createGraphics();
+                g2d.drawImage(image.getScaledInstance(150, 160, Image.SCALE_SMOOTH),
+                        0, 0, 150, 160, null);
+                g2d.dispose();
+                ImageIO.write(outputImage, "png", new File(pathToSaveImage));
+                image = null;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         StudentsDAO.updateStudentDB(new Students(
                 idField.getText(), nameField.getText(), emailField.getText(), phoneField.getText(),
                 addressField.getText(), fileName, MaleChoose.isSelected())
         );
-
-        try {
-            BufferedImage outputImage = new BufferedImage(150, 160, image.getType());
-            Graphics2D g2d = outputImage.createGraphics();
-            g2d.drawImage(image.getScaledInstance(150, 160, Image.SCALE_SMOOTH), 0, 0, 150, 160, null);
-            g2d.dispose();
-            System.out.println(pathToSaveImage);
-            ImageIO.write(outputImage, "png", new File(pathToSaveImage));
-            imageLabel.repaint();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Students student = studentsList.stream().filter(st -> st.getMASV().equals(idField.getText()))
+                .findFirst().get();
+        student.updateStudent(nameField.getText(), emailField.getText(), phoneField.getText(),
+                addressField.getText(), fileName, MaleChoose.isSelected());
+        fillDataToTable(studentsList);
+        updateBtn.setEnabled(false); deleteBtn.setEnabled(false);
+        tableStudents.clearSelection();
+        reloadUI();
     }//GEN-LAST:event_updateBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        StudentsDAO.deleteStudentById(idField.getText());
+        List<Students> studentsToDel = Arrays.stream(tableStudents.getSelectedRows())
+                .mapToObj(index -> studentsList.get(index)).toList();
+        studentsList.removeAll(studentsToDel);
+        StudentsDAO.deleteStudents(studentsToDel.toArray(Students[]::new));
+        studentsToDel.forEach(student -> new File(
+                pathUpload + "\\" + student.getHinh()).delete());
+        fillDataToTable(studentsList);
+        deleteBtn.setEnabled(false);
+        updateBtn.setEnabled(false);
+        idField.setEnabled(true);
+        reloadUI();
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void tableStudentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentsMouseClicked
@@ -382,16 +428,34 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
         if (!st.isGioitinh()) femaleChoose.setSelected(true);
         imageLabel.setIcon(new ImageIcon(
                 pathUpload + "\\" + st.getHinh()));
+        deleteBtn.setEnabled(true); updateBtn.setEnabled(true);
+        idField.setEnabled(false);
+        saveBtn.setEnabled(false);
     }//GEN-LAST:event_tableStudentsMouseClicked
 
+    private void tableStudentsMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentsMouseDragged
+        deleteBtn.setEnabled(true);
+        saveBtn.setEnabled(false);
+    }//GEN-LAST:event_tableStudentsMouseDragged
+
     void fillDataToTable(List<Students> students) {
+        if (students.isEmpty()){
+            ((DefaultTableModel) tableStudents.getModel()).setRowCount(0);
+            return;
+        }
         Actions.fillToTable(tableStudents, students.stream().map(
                 st -> new Object[] {
                         st.getMASV(), st.getHoten(), st.getEmail(), st.getSoDT(),
-                        st.isGioitinh()?"Nam" : "Nữ", st.getDiachi(), st.getHinh()
+                        st.isGioitinh()? "Nam" : "Nữ", st.getDiachi(), st.getHinh()
                 }).collect(Collectors.toList()));
     }
 
+    void reloadUI() {
+        Actions.resetTextField(nameField, idField, emailField, phoneField, addressField);
+        idField.setEnabled(true);
+        MaleChoose.setSelected(true);
+        imageLabel.setIcon(null);
+    }
 
     BufferedImage image = null;
     String filePath = "";
