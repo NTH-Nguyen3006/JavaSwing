@@ -49,7 +49,7 @@ public class Grade {
         return Java;
     }
 
-    public void setJava(int java) {
+    public void setJava(double java) {
         Java = java;
     }
 
@@ -57,7 +57,7 @@ public class Grade {
         return SQL;
     }
 
-    public void setSQL(int SQL) {
+    public void setSQL(double SQL) {
         this.SQL = SQL;
     }
 

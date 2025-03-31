@@ -4,6 +4,8 @@ import Assignment.dto.Grade;
 import Assignment.dto.Students;
 import Extension.Sql.Cursor;
 
+import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 
 public class GradeDAO {
@@ -25,6 +27,10 @@ public class GradeDAO {
     public static Grade getStudentGradeByStudentId(String MaSv) {
         return (Grade) cursorGradeTab.execute(
                 "SELECT * FROM GRADE WHERE MASV = ?", MaSv).fetchOne();
+    }
+
+    public static void deleteGradeData(Object[][] studentIds) {
+
     }
 
     public static void updateGradeByMaSV(String MaSv, double english, double java, double sql) {

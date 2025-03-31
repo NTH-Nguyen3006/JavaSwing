@@ -11,8 +11,10 @@ import Extension.Actions;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -344,13 +346,6 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-        Actions.resetTextField(engField, javaField, sqlField);
-        fullnameBoxShow.setText("None");
-        studentIDLabel.setText("None");
-        averageMark.setText("None");
-        updateBtn.setEnabled(false);
-        deleteBtn.setEnabled(false);
-        tableStudents.clearSelection();
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
@@ -369,14 +364,19 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_updateBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        List<Grade> gradesToDel = Arrays.stream(tableStudents.getSelectedRows())
-                .mapToObj(index -> gradeList.get(index)).toList();
+        Object[][] idsToDel = Arrays.stream(tableStudents.getSelectedRows()).mapToObj(
+                        row -> new Object[]{tableStudents.getValueAt(row, 0)})
+                .toArray(Object[][]::new);
+        GradeDAO.deleteGradeData(idsToDel);
 
-        gradeList.removeAll(gradesToDel);
+        gradeList.forEach(grade -> {
+            grade.setTienganh(0);
+        });
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         if (searchBtn.getText().isEmpty()) fillToTable();
+
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void tableStudentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentsMouseClicked

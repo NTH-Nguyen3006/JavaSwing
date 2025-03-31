@@ -52,10 +52,13 @@ public class Cursor {
                 .anyMatch(p -> p.equals(ResultSet.class)));
     }
 
-    public Object convertToFieldType(Object obj, String fieldName, Object columnData) throws NoSuchFieldException, IllegalAccessException {
+    public Object convertToFieldType(Field field, String fieldName, Object columnData) throws IllegalAccessException {
         try {
-            Field field = obj.getClass().getDeclaredField(fieldName);
+//            Field field = obj.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
+            if ((columnData == null) && (field.getType() == double.class || field.getType() == int.class ||
+                    field.getType() == float.class))
+                return 0;
             if (field.getType() == float.class)
                 return (float) columnData;
             else if (field.getType() == double.class)
@@ -63,6 +66,7 @@ public class Cursor {
 
             return columnData;
         } catch (Exception e) {
+            e.printStackTrace();
             return columnData;
         }
     }
@@ -90,7 +94,7 @@ public class Cursor {
                     Constructor<?> constructor = cls.getConstructor();
                     Object o = constructor.newInstance();
                     ResultSetMetaData meta = rs.getMetaData();
-                    fieldf: for (int i = 0; i < meta.getColumnCount(); i++) {
+                    for (int i = 0; i < meta.getColumnCount(); i++) {
                         String ColumnName = meta.getColumnName(i+1);
                         Field field = Arrays.stream(fields).filter(
                                 f -> f.getName().equalsIgnoreCase(ColumnName))
@@ -104,8 +108,8 @@ public class Cursor {
                         }
                         else {
                             Field[] fieldsother = Arrays.stream(fields)
-                                    .filter(f -> !Arrays.asList(DefaultDbType)
-                                            .contains(f.getType())).toArray(Field[]::new);
+                                .filter(f -> !Arrays.asList(DefaultDbType)
+                                    .contains(f.getType())).toArray(Field[]::new);
 
                             for (Field fie : fieldsother) {
                                 Class<?> fieldType = fie.getType();
