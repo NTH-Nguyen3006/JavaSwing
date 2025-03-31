@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -324,7 +325,6 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
             try {
                 File file = fileChooser.getSelectedFile();
                 filePath = file.getAbsolutePath();
-                System.out.println(filePath);
                 image = ImageIO.read(file);
                 Image img = image.getScaledInstance(150, 160, BufferedImage.SCALE_DEFAULT);
                 imageLabel.setIcon(new ImageIcon(img));
@@ -345,6 +345,18 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_newBtnActionPerformed
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        boolean findId = studentsList.stream().anyMatch(
+                st -> st.getMASV().equalsIgnoreCase(idField.getText()));
+        if (idField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Hãy nhập đầy đủ dữ liệu..");
+            return;
+        }
+        if (findId) {
+            JOptionPane.showMessageDialog(this,
+                    "Mã sinh viên này đã tồn tại");
+            return;
+        }
         String fileName = null;
         if (image != null) {
             fileName = String.format("avatar_%s.png", idField.getText());
@@ -352,7 +364,7 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
             try {
                 BufferedImage outputImage = new BufferedImage(150, 160, image.getType());
                 Graphics2D g2d = outputImage.createGraphics();
-                g2d.drawImage(image.getScaledInstance(150, 160, Image.SCALE_SMOOTH),
+                g2d.drawImage(image.getScaledInstance(150, 160, Image.SCALE_DEFAULT),
                         0, 0, 150, 160, null);
                 g2d.dispose();
                 ImageIO.write(outputImage, "png", new File(pathToSaveImage));
@@ -372,18 +384,17 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-        String fileName = String.format("avatar_%s.png", idField.getText().toLowerCase());
+        new File(pathUpload + "\\" + studentsList.get(tableStudents.getSelectedRow()).getHinh()).delete();
+        String fileName = String.format("avatar-%s-%d.png", idField.getText().toLowerCase(), new Date().getTime());
         if (image != null) {
             String pathToSaveImage = pathUpload + "\\" + fileName;
-            new File(pathToSaveImage).delete();
             try {
                 BufferedImage outputImage = new BufferedImage(150, 160, image.getType());
                 Graphics2D g2d = outputImage.createGraphics();
-                g2d.drawImage(image.getScaledInstance(150, 160, Image.SCALE_SMOOTH),
+                g2d.drawImage(image.getScaledInstance(150, 160, Image.SCALE_DEFAULT),
                         0, 0, 150, 160, null);
                 g2d.dispose();
                 ImageIO.write(outputImage, "png", new File(pathToSaveImage));
-                image = null;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

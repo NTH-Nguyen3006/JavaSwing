@@ -4,6 +4,18 @@
  */
 package Assignment.control;
 
+import Assignment.dao.GradeDAO;
+import Assignment.dto.Grade;
+import Assignment.dto.Students;
+import Extension.Actions;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author Admin
@@ -20,6 +32,8 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
      */
     public GradeService() {
         initComponents();
+        gradeList = GradeDAO.getAllData();
+        fillToTable();
     }
 
     /**
@@ -42,19 +56,19 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        phoneField = new javax.swing.JTextField();
+        engField = new javax.swing.JTextField();
         fullnameBoxShow = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        phoneField1 = new javax.swing.JTextField();
+        javaField = new javax.swing.JTextField();
         SQL = new javax.swing.JLabel();
-        phoneField2 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
+        sqlField = new javax.swing.JTextField();
+        studentIDLabel = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        averageMark = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        idField = new javax.swing.JTextField();
-        newBtn1 = new javax.swing.JButton();
+        searchMaSVField = new javax.swing.JTextField();
+        searchBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Dịch Vụ - Quản Lý Điểm");
@@ -78,19 +92,51 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
                 return canEdit [columnIndex];
             }
         });
+        tableStudents.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                tableStudentsMouseDragged(evt);
+            }
+        });
+        tableStudents.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableStudentsMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tableStudents);
 
         newBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\AddNew.png")); // NOI18N
         newBtn.setText("New");
+        newBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newBtnActionPerformed(evt);
+            }
+        });
 
         saveBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\save.png")); // NOI18N
         saveBtn.setText("Save");
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\delete.png")); // NOI18N
         deleteBtn.setText("Delete");
+        deleteBtn.setEnabled(false);
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         updateBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\update.png")); // NOI18N
         updateBtn.setText("Update");
+        updateBtn.setEnabled(false);
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBtnActionPerformed(evt);
+            }
+        });
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -112,16 +158,16 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
         SQL.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         SQL.setText("SQL:");
 
-        jLabel5.setForeground(new java.awt.Color(204, 0, 0));
-        jLabel5.setText("None");
+        studentIDLabel.setForeground(new java.awt.Color(204, 0, 0));
+        studentIDLabel.setText("None");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setText("Điểm Trung Bình:");
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 51, 153));
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("None");
+        averageMark.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        averageMark.setForeground(new java.awt.Color(0, 51, 153));
+        averageMark.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        averageMark.setText("None");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -133,12 +179,12 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(30, 30, 30)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(averageMark, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(phoneField, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
+                            .addComponent(engField, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -146,15 +192,15 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(fullnameBoxShow, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(studentIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(phoneField1))
+                            .addComponent(javaField))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(SQL, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(phoneField2))))
+                            .addComponent(sqlField))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -167,23 +213,23 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(studentIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(engField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(phoneField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(javaField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SQL)
-                    .addComponent(phoneField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(sqlField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(averageMark, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -193,8 +239,13 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         jLabel1.setText("Mã Sinh Viên:");
 
-        newBtn1.setIcon(new javax.swing.ImageIcon("D:\\Icon\\search.png")); // NOI18N
-        newBtn1.setText("Search");
+        searchBtn.setIcon(new javax.swing.ImageIcon("D:\\Icon\\search.png")); // NOI18N
+        searchBtn.setText("Search");
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -203,11 +254,11 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(newBtn1)
+                    .addComponent(searchBtn)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(idField, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(searchMaSVField, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -216,9 +267,9 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(idField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(searchMaSVField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(newBtn1)
+                .addComponent(searchBtn)
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -292,6 +343,94 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        Actions.resetTextField(engField, javaField, sqlField);
+        fullnameBoxShow.setText("None");
+        studentIDLabel.setText("None");
+        averageMark.setText("None");
+        updateBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+        tableStudents.clearSelection();
+    }//GEN-LAST:event_saveBtnActionPerformed
+
+    private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
+        reloadUI();
+    }//GEN-LAST:event_newBtnActionPerformed
+
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+        Double english = engField.getText().isEmpty() ? null : Double.parseDouble(engField.getText());
+        Double java = javaField.getText().isEmpty() ? null : Double.parseDouble(javaField.getText());
+        Double sql = sqlField.getText().isEmpty() ? null : Double.parseDouble(sqlField.getText());
+        GradeDAO.updateGradeByMaSV((String) tableStudents.getValueAt(tableStudents.getSelectedRow(), 0),
+                english, java, sql);
+
+        fillToTable();
+        reloadUI();
+    }//GEN-LAST:event_updateBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        List<Grade> gradesToDel = Arrays.stream(tableStudents.getSelectedRows())
+                .mapToObj(index -> gradeList.get(index)).toList();
+
+        gradeList.removeAll(gradesToDel);
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        if (searchBtn.getText().isEmpty()) fillToTable();
+    }//GEN-LAST:event_searchBtnActionPerformed
+
+    private void tableStudentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentsMouseClicked
+        int rowSelected = tableStudents.getSelectedRow();
+        Students studentSelect = new Students();
+        studentSelect.setMASV((String) tableStudents.getValueAt(rowSelected, 0));
+        studentSelect.setHoten((String) tableStudents.getValueAt(rowSelected, 1));
+
+        gradeSelecting = new Grade((double) tableStudents.getValueAt(rowSelected, 4),
+                (double) tableStudents.getValueAt(rowSelected, 3),
+                (double) tableStudents.getValueAt(rowSelected, 2), studentSelect);
+
+        fullnameBoxShow.setText(gradeSelecting.getStudents().getHoten());
+        studentIDLabel.setText(gradeSelecting.getStudents().getMASV());
+        engField.setText(String.format("%.2f", gradeSelecting.getEnglish()));
+        javaField.setText(String.format("%.2f", gradeSelecting.getJava()));
+        sqlField.setText(String.format("%.2f", gradeSelecting.getSQL()));
+        averageMark.setText(String.format("%.2f", gradeSelecting.getAverageMark()));
+
+        updateBtn.setEnabled(true);
+        deleteBtn.setEnabled(true);
+    }//GEN-LAST:event_tableStudentsMouseClicked
+
+    private void tableStudentsMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentsMouseDragged
+        deleteBtn.setEnabled(true);
+    }//GEN-LAST:event_tableStudentsMouseDragged
+
+    private void fillToTable() {
+        if (gradeList.isEmpty()) {
+            ((DefaultTableModel) tableStudents.getModel()).setRowCount(0);
+            return;
+        }
+
+        Actions.fillToTable(tableStudents, gradeList.stream().map(grade -> new Object[]{
+                grade.getStudents().getMASV(), grade.getStudents().getHoten(),
+                grade.getEnglish(), grade.getJava(), grade.getSQL(),
+                String.format("%.2f", (grade.getEnglish() + grade.getJava() + grade.getSQL())/3)
+        }).collect(Collectors.toList()));
+
+    }
+
+    void reloadUI() {
+        Actions.resetTextField(engField, javaField, sqlField, searchMaSVField);
+        fullnameBoxShow.setText("None");
+        studentIDLabel.setText("None");
+        averageMark.setText("None");
+        updateBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+        tableStudents.clearSelection();
+    }
+
+    Grade gradeSelecting = null;
+    List<Grade> gradeList = new ArrayList<>();
+
     /**
      * @param args the command line arguments
      */
@@ -329,27 +468,27 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel SQL;
+    private javax.swing.JLabel averageMark;
     private javax.swing.JButton deleteBtn;
+    private javax.swing.JTextField engField;
     private javax.swing.JLabel fullnameBoxShow;
-    private javax.swing.JTextField idField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField javaField;
     private javax.swing.JButton newBtn;
-    private javax.swing.JButton newBtn1;
-    private javax.swing.JTextField phoneField;
-    private javax.swing.JTextField phoneField1;
-    private javax.swing.JTextField phoneField2;
     private javax.swing.JButton saveBtn;
+    private javax.swing.JButton searchBtn;
+    private javax.swing.JTextField searchMaSVField;
+    private javax.swing.JTextField sqlField;
+    private javax.swing.JLabel studentIDLabel;
     private javax.swing.JTable tableStudents;
     private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables

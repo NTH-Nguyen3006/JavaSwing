@@ -174,6 +174,10 @@
                   <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="tableStudentsMouseDragged"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tableStudentsMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -184,6 +188,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="New"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="saveBtn">
           <Properties>
@@ -192,6 +199,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Save"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="deleteBtn">
           <Properties>
@@ -199,7 +209,11 @@
               <Image iconType="2" name="D:\Icon\delete.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Delete"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="updateBtn">
           <Properties>
@@ -207,7 +221,11 @@
               <Image iconType="2" name="D:\Icon\update.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Update"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateBtnActionPerformed"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel2">
           <Properties>
@@ -227,13 +245,13 @@
                           <Group type="102" attributes="0">
                               <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="jLabel8" min="-2" pref="155" max="-2" attributes="0"/>
+                              <Component id="averageMark" min="-2" pref="155" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel4" min="-2" pref="87" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="phoneField" pref="234" max="32767" attributes="0"/>
+                                  <Component id="engField" pref="234" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -243,18 +261,18 @@
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="fullnameBoxShow" pref="234" max="32767" attributes="0"/>
-                                      <Component id="jLabel5" max="32767" attributes="0"/>
+                                      <Component id="studentIDLabel" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jLabel7" min="-2" pref="87" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="phoneField1" max="32767" attributes="0"/>
+                                  <Component id="javaField" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="SQL" min="-2" pref="87" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="phoneField2" max="32767" attributes="0"/>
+                                  <Component id="sqlField" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -273,27 +291,27 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jLabel3" max="32767" attributes="0"/>
-                          <Component id="jLabel5" max="32767" attributes="0"/>
+                          <Component id="studentIDLabel" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="phoneField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="engField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="phoneField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="javaField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="SQL" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="phoneField2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="sqlField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel8" alignment="3" min="-2" pref="54" max="-2" attributes="0"/>
+                          <Component id="averageMark" alignment="3" min="-2" pref="54" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="26" max="32767" attributes="0"/>
                   </Group>
@@ -325,7 +343,7 @@
                 <Property name="text" type="java.lang.String" value="Ti&#x1ebf;ng anh:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="phoneField">
+            <Component class="javax.swing.JTextField" name="engField">
             </Component>
             <Component class="javax.swing.JLabel" name="fullnameBoxShow">
               <Properties>
@@ -343,7 +361,7 @@
                 <Property name="text" type="java.lang.String" value="Java:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="phoneField1">
+            <Component class="javax.swing.JTextField" name="javaField">
             </Component>
             <Component class="javax.swing.JLabel" name="SQL">
               <Properties>
@@ -353,9 +371,9 @@
                 <Property name="text" type="java.lang.String" value="SQL:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="phoneField2">
+            <Component class="javax.swing.JTextField" name="sqlField">
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel5">
+            <Component class="javax.swing.JLabel" name="studentIDLabel">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="cc" type="rgb"/>
@@ -371,7 +389,7 @@
                 <Property name="text" type="java.lang.String" value="&#x110;i&#x1ec3;m Trung B&#xec;nh:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel8">
+            <Component class="javax.swing.JLabel" name="averageMark">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="18" style="1"/>
@@ -403,11 +421,11 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="newBtn1" min="-2" max="-2" attributes="0"/>
+                          <Component id="searchBtn" min="-2" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="jLabel1" min="-2" pref="87" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="idField" min="-2" pref="174" max="-2" attributes="0"/>
+                              <Component id="searchMaSVField" min="-2" pref="174" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="25" max="32767" attributes="0"/>
@@ -420,10 +438,10 @@
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="idField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="searchMaSVField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="newBtn1" min="-2" max="-2" attributes="0"/>
+                      <Component id="searchBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="14" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -438,15 +456,18 @@
                 <Property name="text" type="java.lang.String" value="M&#xe3; Sinh Vi&#xea;n:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="idField">
+            <Component class="javax.swing.JTextField" name="searchMaSVField">
             </Component>
-            <Component class="javax.swing.JButton" name="newBtn1">
+            <Component class="javax.swing.JButton" name="searchBtn">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="2" name="D:\Icon\search.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Search"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchBtnActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

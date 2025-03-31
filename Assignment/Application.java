@@ -10,6 +10,4 @@ public class Application {
         Login loginForm = new Login();
         loginForm.setVisible(true);
     }
-
-
 }

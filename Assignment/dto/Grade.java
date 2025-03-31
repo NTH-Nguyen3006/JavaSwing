@@ -5,6 +5,22 @@ public class Grade {
     private Students students;
     private double English, Java, SQL;
 
+    public void updateGrade(double English, double Java, double SQL) {
+        this.English = English;
+        this.Java = Java;
+        this.SQL = SQL;
+    }
+
+    public Grade() {
+    }
+
+    public Grade(double SQL, double java, double english, Students students) {
+        this.SQL = SQL;
+        Java = java;
+        English = english;
+        this.students = students;
+    }
+
     public int getID() {
         return ID;
     }
@@ -43,5 +59,9 @@ public class Grade {
 
     public void setSQL(int SQL) {
         this.SQL = SQL;
+    }
+
+    public double getAverageMark() {
+        return (English + Java + SQL) / 3;
     }
 }
