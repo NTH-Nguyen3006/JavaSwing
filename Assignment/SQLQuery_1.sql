@@ -1,0 +1,66 @@
+CREATE DATABASE "FPL_DAOTAO";
+USE FPL_DAOTAO;
+
+CREATE TABLE USERS (
+    username NVARCHAR(50) NOT NULL PRIMARY KEY,
+    password NVARCHAR(50) NULL,
+    [role] NVARCHAR(50) NULL
+);
+CREATE TABLE STUDENTS (
+    MASV NVARCHAR(50) NOT NULL PRIMARY KEY,
+    Hoten NVARCHAR(50) NULL,
+    Email NVARCHAR(50) NULL,
+    SoDT NVARCHAR(15) NULL,
+    Gioitinh BIT NULL,
+    Diachi NVARCHAR(50) NULL,
+    Hinh NVARCHAR(50) NULL
+);
+CREATE TABLE GRADE (
+    ID INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    MASV NVARCHAR(50) NULL,
+    English FLOAT NULL,
+    Java FLOAT NULL,
+    [SQL] FLOAT NULL,
+    FOREIGN KEY (MASV) REFERENCES STUDENTS(MASV)
+);
+GO;
+-- DROP TABLE GRADE
+
+INSERT INTO dbo.USERS VALUES
+('admin', 'f6fdffe48c908deb0f4c3bd36c032e72', 'ADMIN'),
+('haha123', '5e26f92167ac12cd9d8498ca968eca21', 'CADRE'),
+('Hihi789', '7c14ed7621f124d197feea11b1d14c83', 'LECTURE')
+
+INSERT INTO STUDENTS (MASV, Hoten, Email, SoDT, Gioitinh, Diachi, Hinh) VALUES
+('SV001', N'Nguyễn Văn A', 'a.nguyen@example.com', '0901234567', 1, N'Hà Nội', null),
+('SV002', N'Trần Thị B', 'b.tran@example.com', '0908765432', 0, N'TP.HCM', null),
+('SV003', N'Lê Văn C', 'c.le@example.com', '0912345678', 1, N'Đà Nẵng', null);
+
+INSERT INTO GRADE VALUES
+('SV001', null, 7, 9),
+('SV002', 7, 6, 7),
+('SV003', 8, 8, 8);
+GO
+--DELETE FROM GRADE
+--DELETE FROM STUDENTS
+
+CREATE PROCEDURE deleteStudents @studentId VARCHAR(50)
+AS BEGIN
+    DELETE FROM GRADE WHERE MASV = @studentId;
+    DELETE FROM STUDENTS WHERE MASV = @studentId;
+END
+GO
+
+CREATE TRIGGER InsertStudentTRG ON STUDENTS AFTER INSERT
+AS INSERT INTO GRADE (MASV) SELECT MASV FROM INSERTED;
+GO
+
+
+CREATE PROC createUserIfNotExists @MaSV VARCHAR(50),
+        @english FLOAT, @java FLOAT, @sql FLOAT
+AS BEGIN
+    IF EXISTS (SELECT 1 FROM GRADE WHERE MASV = @MaSV)
+        UPDATE GRADE SET English = @english, Java = @java, [SQL] = @sql 
+        WHERE MASV = MASV
+END
+GO
