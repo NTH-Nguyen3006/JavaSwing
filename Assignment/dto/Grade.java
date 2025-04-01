@@ -62,11 +62,6 @@ public class Grade {
     }
 
     public double getAverageMark() {
-//        int total = 0;
-//        if (English != 0) ++total;
-//        if (Java != 0) ++total;
-//        if (SQL != 0) ++total;
-//        if (total == 0 ) return 0;
         return (English + Java + SQL) / 3;
     }
 }

@@ -340,7 +340,9 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-
+        GradeDAO.updateGradeList(gradeList);
+        reloadUI();
+        fillToTable();
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
@@ -352,9 +354,11 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
             Double english = checkInvalidGrade(engField.getText());
             Double java = checkInvalidGrade(javaField.getText());
             Double sql = checkInvalidGrade(sqlField.getText());
-            GradeDAO.updateGradeByMaSV((String) tableStudents.getValueAt(tableStudents.getSelectedRow(), 0),
+            gradeSelecting.updateGrade(english, java, sql);
+            GradeDAO.updateGradeByMaSV(gradeSelecting.getStudents().getMASV(),
                     english, java, sql);
         } catch (RuntimeException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Điểm nhập không hợp lệ.");
             return;
         }
@@ -384,10 +388,10 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
         gradeSelecting = gradeList.get(tableStudents.getSelectedRow());
         studentIDLabel.setText(gradeSelecting.getStudents().getMASV());
         fullnameBoxShow.setText(gradeSelecting.getStudents().getHoten());
-        engField.setText(gradeSelecting.getEnglish() == 0? "" : String.format("%.2f", gradeSelecting.getEnglish()));
-        javaField.setText(gradeSelecting.getJava() == 0? "" : String.format("%.2f", gradeSelecting.getJava()));
-        sqlField.setText(gradeSelecting.getSQL() == 0? "" : String.format("%.2f", gradeSelecting.getSQL()));
-        averageMark.setText(String.format("%.2f", gradeSelecting.getAverageMark()));
+        engField.setText(gradeSelecting.getEnglish() == 0 ? "" : String.valueOf(gradeSelecting.getEnglish()));
+        javaField.setText(gradeSelecting.getJava() == 0 ? "" : String.valueOf(gradeSelecting.getEnglish()));
+        sqlField.setText(gradeSelecting.getSQL() == 0 ? "" : String.valueOf(gradeSelecting.getSQL()));
+        averageMark.setText(String.format("%.2f", gradeSelecting.getAverageMark()).replace(',', '.'));
         updateBtn.setEnabled(true);
         deleteBtn.setEnabled(true);
     }//GEN-LAST:event_tableStudentsMouseClicked
@@ -403,9 +407,9 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
         }
 
         Actions.fillToTable(tableStudents, gradeList.stream().map(grade -> {
-            String english = grade.getEnglish() == 0 ? "" : String.format("%.2f", grade.getEnglish());
-            String java = grade.getJava() == 0 ? "" : String.format("%.2f", grade.getJava());
-            String sql = grade.getSQL() == 0 ? "" : String.format("%.2f", grade.getSQL());
+            String english = grade.getEnglish() == 0 ? "" : String.format("%.1f", grade.getEnglish());
+            String java = grade.getJava() == 0 ? "" : String.format("%.1f", grade.getJava());
+            String sql = grade.getSQL() == 0 ? "" : String.format("%.1f", grade.getSQL());
             return new Object[]{
                     grade.getStudents().getMASV(), grade.getStudents().getHoten(),
                     english, java, sql, String.format("%.2f", grade.getAverageMark())
@@ -414,6 +418,7 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
     }
 
     Double checkInvalidGrade(String gradeTxt) {
+        gradeTxt = gradeTxt.replace(",", ".");
         if (gradeTxt.isEmpty()) return null;
         else {
             double grade = Double.parseDouble(gradeTxt);

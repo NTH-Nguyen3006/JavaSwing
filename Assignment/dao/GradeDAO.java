@@ -40,4 +40,16 @@ public class GradeDAO {
                 WHERE MASV = ?;
                 """, english, java, sql, MaSv);
     }
+
+    public static void updateGradeList(List<Grade> gradeList) {
+        Object[][] dataToUpdate = gradeList.stream().map(g -> new Object[] {
+                g.getEnglish(), g.getJava(), g.getSQL(), g.getStudents().getMASV()
+        }).toArray(Object[][]::new);
+
+        cursorGradeTab.executeMany("""
+                UPDATE GRADE
+                SET English = ?, Java = ?, [SQL] = ?
+                WHERE MASV = ?;
+                """, dataToUpdate);
+    }
 }
