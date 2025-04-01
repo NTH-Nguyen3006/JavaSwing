@@ -11,17 +11,11 @@ import Extension.Actions;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author Admin
- */
 public class GradeService extends javax.swing.JFrame implements Runnable {
 
     @Override
@@ -346,6 +340,7 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
@@ -353,12 +348,16 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_newBtnActionPerformed
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-        Double english = engField.getText().isEmpty() ? null : Double.parseDouble(engField.getText());
-        Double java = javaField.getText().isEmpty() ? null : Double.parseDouble(javaField.getText());
-        Double sql = sqlField.getText().isEmpty() ? null : Double.parseDouble(sqlField.getText());
-        GradeDAO.updateGradeByMaSV((String) tableStudents.getValueAt(tableStudents.getSelectedRow(), 0),
-                english, java, sql);
-
+        try {
+            Double english = checkInvalidGrade(engField.getText());
+            Double java = checkInvalidGrade(javaField.getText());
+            Double sql = checkInvalidGrade(sqlField.getText());
+            GradeDAO.updateGradeByMaSV((String) tableStudents.getValueAt(tableStudents.getSelectedRow(), 0),
+                    english, java, sql);
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(this, "Điểm nhập không hợp lệ.");
+            return;
+        }
         fillToTable();
         reloadUI();
     }//GEN-LAST:event_updateBtnActionPerformed
@@ -368,34 +367,27 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
                         row -> new Object[]{tableStudents.getValueAt(row, 0)})
                 .toArray(Object[][]::new);
         GradeDAO.deleteGradeData(idsToDel);
-
-        gradeList.forEach(grade -> {
-            grade.setTienganh(0);
-        });
+//
+//        gradeList.forEach(grade -> {
+//            grade.setTienganh(0);
+//        });
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        if (searchBtn.getText().isEmpty()) fillToTable();
-
+        String searchTxt = searchMaSVField.getText();
+        if (searchTxt.isEmpty()) gradeList = GradeDAO.getAllData();
+        else gradeList = GradeDAO.getStudentGradeByStudentId(searchTxt);
+        fillToTable();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void tableStudentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentsMouseClicked
-        int rowSelected = tableStudents.getSelectedRow();
-        Students studentSelect = new Students();
-        studentSelect.setMASV((String) tableStudents.getValueAt(rowSelected, 0));
-        studentSelect.setHoten((String) tableStudents.getValueAt(rowSelected, 1));
-
-        gradeSelecting = new Grade((double) tableStudents.getValueAt(rowSelected, 4),
-                (double) tableStudents.getValueAt(rowSelected, 3),
-                (double) tableStudents.getValueAt(rowSelected, 2), studentSelect);
-
-        fullnameBoxShow.setText(gradeSelecting.getStudents().getHoten());
+        gradeSelecting = gradeList.get(tableStudents.getSelectedRow());
         studentIDLabel.setText(gradeSelecting.getStudents().getMASV());
-        engField.setText(String.format("%.2f", gradeSelecting.getEnglish()));
-        javaField.setText(String.format("%.2f", gradeSelecting.getJava()));
-        sqlField.setText(String.format("%.2f", gradeSelecting.getSQL()));
+        fullnameBoxShow.setText(gradeSelecting.getStudents().getHoten());
+        engField.setText(gradeSelecting.getEnglish() == 0? "" : String.format("%.2f", gradeSelecting.getEnglish()));
+        javaField.setText(gradeSelecting.getJava() == 0? "" : String.format("%.2f", gradeSelecting.getJava()));
+        sqlField.setText(gradeSelecting.getSQL() == 0? "" : String.format("%.2f", gradeSelecting.getSQL()));
         averageMark.setText(String.format("%.2f", gradeSelecting.getAverageMark()));
-
         updateBtn.setEnabled(true);
         deleteBtn.setEnabled(true);
     }//GEN-LAST:event_tableStudentsMouseClicked
@@ -410,12 +402,25 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
             return;
         }
 
-        Actions.fillToTable(tableStudents, gradeList.stream().map(grade -> new Object[]{
-                grade.getStudents().getMASV(), grade.getStudents().getHoten(),
-                grade.getEnglish(), grade.getJava(), grade.getSQL(),
-                String.format("%.2f", (grade.getEnglish() + grade.getJava() + grade.getSQL())/3)
+        Actions.fillToTable(tableStudents, gradeList.stream().map(grade -> {
+            String english = grade.getEnglish() == 0 ? "" : String.format("%.2f", grade.getEnglish());
+            String java = grade.getJava() == 0 ? "" : String.format("%.2f", grade.getJava());
+            String sql = grade.getSQL() == 0 ? "" : String.format("%.2f", grade.getSQL());
+            return new Object[]{
+                    grade.getStudents().getMASV(), grade.getStudents().getHoten(),
+                    english, java, sql, String.format("%.2f", grade.getAverageMark())
+            };
         }).collect(Collectors.toList()));
+    }
 
+    Double checkInvalidGrade(String gradeTxt) {
+        if (gradeTxt.isEmpty()) return null;
+        else {
+            double grade = Double.parseDouble(gradeTxt);
+            if (grade < 0 || grade > 10)
+                throw new RuntimeException("Invalid Student Grade");
+            else  return grade;
+        }
     }
 
     void reloadUI() {

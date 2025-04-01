@@ -22,10 +22,6 @@ import java.util.stream.Collectors;
 
 import Assignment.dao.StudentsDAO;
 
-/**
- *
- * @author Admin
- */
 public class StudentService extends javax.swing.JFrame implements Runnable {
 
     @Override

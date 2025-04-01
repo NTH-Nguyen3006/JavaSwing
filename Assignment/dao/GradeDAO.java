@@ -24,9 +24,9 @@ public class GradeDAO {
                 "SELECT * FROM GRADE WHERE id = ?", id).fetchOne();
     }
 
-    public static Grade getStudentGradeByStudentId(String MaSv) {
-        return (Grade) cursorGradeTab.execute(
-                "SELECT * FROM GRADE WHERE MASV = ?", MaSv).fetchOne();
+    public static List<Grade> getStudentGradeByStudentId(String MaSv) {
+        return getAllData().stream().filter(grade -> grade.getStudents().getMASV().equalsIgnoreCase(MaSv))
+                .toList();
     }
 
     public static void deleteGradeData(Object[][] studentIds) {
