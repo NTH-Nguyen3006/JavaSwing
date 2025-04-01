@@ -340,6 +340,8 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        if (studentIDLabel.getText().equals("None")) return;
+        updateBtnActionPerformed(evt);
         GradeDAO.updateGradeList(gradeList);
         reloadUI();
         fillToTable();
@@ -371,10 +373,6 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
                         row -> new Object[]{tableStudents.getValueAt(row, 0)})
                 .toArray(Object[][]::new);
         GradeDAO.deleteGradeData(idsToDel);
-//
-//        gradeList.forEach(grade -> {
-//            grade.setTienganh(0);
-//        });
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
@@ -389,7 +387,7 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
         studentIDLabel.setText(gradeSelecting.getStudents().getMASV());
         fullnameBoxShow.setText(gradeSelecting.getStudents().getHoten());
         engField.setText(gradeSelecting.getEnglish() == 0 ? "" : String.valueOf(gradeSelecting.getEnglish()));
-        javaField.setText(gradeSelecting.getJava() == 0 ? "" : String.valueOf(gradeSelecting.getEnglish()));
+        javaField.setText(gradeSelecting.getJava() == 0 ? "" : String.valueOf(gradeSelecting.getJava()));
         sqlField.setText(gradeSelecting.getSQL() == 0 ? "" : String.valueOf(gradeSelecting.getSQL()));
         averageMark.setText(String.format("%.2f", gradeSelecting.getAverageMark()).replace(',', '.'));
         updateBtn.setEnabled(true);
