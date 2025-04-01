@@ -71,6 +71,11 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quản Lý Điểm - Sinh Viên", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 24), new java.awt.Color(0, 51, 153))); // NOI18N
         jPanel1.setToolTipText("");
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel1MouseClicked(evt);
+            }
+        });
 
         tableStudents.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -370,9 +375,15 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         Object[][] idsToDel = Arrays.stream(tableStudents.getSelectedRows()).mapToObj(
-                        row -> new Object[]{tableStudents.getValueAt(row, 0)})
-                .toArray(Object[][]::new);
+            row -> {
+                Grade grade = gradeList.get(row);
+                grade.updateGrade(0, 0 , 0);
+//                return new Object[]{tableStudents.getValueAt(row, 0)};
+                return new Object[] {grade.getStudents().getMASV()};
+            }).toArray(Object[][]::new);
         GradeDAO.deleteGradeData(idsToDel);
+        fillToTable();
+        deleteBtn.setEnabled(false);
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
@@ -397,6 +408,11 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
     private void tableStudentsMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStudentsMouseDragged
         deleteBtn.setEnabled(true);
     }//GEN-LAST:event_tableStudentsMouseDragged
+
+    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+        tableStudents.clearSelection();
+        reloadUI();
+    }//GEN-LAST:event_jPanel1MouseClicked
 
     private void fillToTable() {
         if (gradeList.isEmpty()) {

@@ -30,7 +30,11 @@ public class GradeDAO {
     }
 
     public static void deleteGradeData(Object[][] studentIds) {
-
+        cursorGradeTab.executeMany("""
+                UPDATE GRADE
+                SET English = NULL, Java = NULL, [SQL] = NULL
+                WHERE MASV = ?;
+                """, studentIds);
     }
 
     public static void updateGradeByMaSV(String MaSv, double english, double java, double sql) {
