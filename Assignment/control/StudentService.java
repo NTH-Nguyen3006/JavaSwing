@@ -26,7 +26,7 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
 
     @Override
     public void run() {
-        main(new String[]{});
+        main(new String[0]);
     }
 
     /**
@@ -76,6 +76,8 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Dịch Vụ - Quản Lý Sinh Viên");
+        setBounds(new java.awt.Rectangle(0, 0, 0, 0));
+        setLocation(new java.awt.Point(100, 100));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quản Lý Sinh Viên", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 24), new java.awt.Color(0, 51, 153))); // NOI18N
         jPanel1.setToolTipText("");
@@ -309,7 +311,6 @@ public class StudentService extends javax.swing.JFrame implements Runnable {
         );
 
         pack();
-        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void addImgBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addImgBtnActionPerformed

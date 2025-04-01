@@ -220,14 +220,11 @@ public class Bai1 extends javax.swing.JFrame {
             List<int[]> listIdBook = booksSelected.stream()
                     .map(b -> new int[]{b.getID()}).toList();
 
-            try {
-                cursorBook.executeMany(
-                        "DELETE FROM Books WHERE ID = ?", listIdBook.toArray(Object[][]::new));
-                books.removeAll(booksSelected);
-                Actions.fillToTable(tableLibrary, books);
-            } catch (SQLException | NoSuchFieldException e) {
-                throw new RuntimeException(e);
-            }
+            cursorBook.executeMany(
+                    "DELETE FROM Books WHERE ID = ?", listIdBook.toArray(Object[][]::new));
+            books.removeAll(booksSelected);
+            Actions.fillToTable(tableLibrary, books);
+
         }
     }//GEN-LAST:event_deleleBtnActionPerformed
 

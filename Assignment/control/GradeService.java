@@ -20,7 +20,7 @@ public class GradeService extends javax.swing.JFrame implements Runnable {
 
     @Override
     public void run() {
-        main(new String[]{});
+        main(new String[0]);
     }
 
     /**

@@ -313,20 +313,16 @@ public class Bai2 extends javax.swing.JFrame {
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        try {
-            Object[][] data = Arrays.stream(tableSP.getSelectedRows())
-                    .mapToObj(i -> new Object[]{products.get(i).getMaSanPham()})
-                    .toArray(Object[][]::new);
+        Object[][] data = Arrays.stream(tableSP.getSelectedRows())
+                .mapToObj(i -> new Object[]{products.get(i).getMaSanPham()})
+                .toArray(Object[][]::new);
 
-            cursorSp.executeMany("DELETE FROM SanPham WHERE maSanPham = ?",
-                    data);
-            products = getAllData();
-            Actions.fillToTable(tableSP, products.stream()
-                    .map(p -> new Object[]{p.getMaSanPham(), p.getTenSP(), p.getLoaiSanPham().getTenLoai()})
-                    .collect(Collectors.toList()));
-        } catch (SQLException |NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
+        cursorSp.executeMany("DELETE FROM SanPham WHERE maSanPham = ?",
+                data);
+        products = getAllData();
+        Actions.fillToTable(tableSP, products.stream()
+                .map(p -> new Object[]{p.getMaSanPham(), p.getTenSP(), p.getLoaiSanPham().getTenLoai()})
+                .collect(Collectors.toList()));
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
