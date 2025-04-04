@@ -32,6 +32,7 @@ public class Authentication {
 
     private boolean Check() {
         Users users = new UsersDAO().getUserOnUsername(username);
+        if (users == null) return false;
         boolean check = users.checkPassword(stringEncode());
         this.user = users;
         return check;

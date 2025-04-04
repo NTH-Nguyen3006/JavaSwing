@@ -10,7 +10,6 @@ import Extension.Sql.Sql;
 
 import javax.swing.*;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,9 +48,7 @@ public class Bai2 extends javax.swing.JFrame {
                                 object -> ((LoaiSanPham) object).getTenLoai())
                         .toArray(String[]::new)));
 
-        Actions.fillToTable(tableSP, products.stream()
-                .map(p -> new Object[]{p.getMaSanPham(), p.getTenSP(), p.getLoaiSanPham().getTenLoai()})
-                .collect(Collectors.toList()));
+        fillToTable(products);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -317,8 +314,7 @@ public class Bai2 extends javax.swing.JFrame {
                 .mapToObj(i -> new Object[]{products.get(i).getMaSanPham()})
                 .toArray(Object[][]::new);
 
-        cursorSp.executeMany("DELETE FROM SanPham WHERE maSanPham = ?",
-                data);
+        cursorSp.executeMany("DELETE FROM SanPham WHERE maSanPham = ?", data);
         products = getAllData();
         Actions.fillToTable(tableSP, products.stream()
                 .map(p -> new Object[]{p.getMaSanPham(), p.getTenSP(), p.getLoaiSanPham().getTenLoai()})
@@ -338,7 +334,6 @@ public class Bai2 extends javax.swing.JFrame {
         product.setDonGia(new BigDecimal(priceField.getText()));
         product.setSoLuong(Integer.parseInt(quantityField.getText()));
         product.setLoaiSanPham(productTypes.get(productTypeField.getSelectedIndex()));
-//            products = getAllData();
         Actions.fillToTable(tableSP, products.stream()
                 .map(p -> new Object[]{
                         p.getMaSanPham(), p.getTenSP(), p.getLoaiSanPham().getTenLoai()})
@@ -364,6 +359,12 @@ public class Bai2 extends javax.swing.JFrame {
         updateBtn.setEnabled(true);
     }//GEN-LAST:event_tableSPMouseClicked
 
+    void fillToTable(List<SanPham> listLoadToTb) {
+        Actions.fillToTable(tableSP, listLoadToTb.stream()
+                .map(p -> new Object[]{p.getMaSanPham(), p.getTenSP(), p.getLoaiSanPham().getTenLoai()})
+                .collect(Collectors.toList()));
+    }
+
     Sql sql = new Sql("""
             jdbc:sqlserver://localhost:1433; databaseName=QuanLyBanHang;
             user=sa; password=123; encrypt=true; trustServerCertificate=true;
@@ -380,7 +381,7 @@ public class Bai2 extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

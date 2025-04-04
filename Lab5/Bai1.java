@@ -214,17 +214,12 @@ public class Bai1 extends javax.swing.JFrame {
                 "Bạn có chắc chắn xóa tất cả dữ liệu đã chọn chứ ?",
                 "Xác nhận", JOptionPane.YES_NO_OPTION) == 0) {
 
-            List<Book> booksSelected = Arrays.stream(tableLibrary.getSelectedRows())
-                    .mapToObj(i -> books.get(i)).toList();
-
-            List<int[]> listIdBook = booksSelected.stream()
-                    .map(b -> new int[]{b.getID()}).toList();
-
+            Object[][] bookIdToDel = Arrays.stream(tableLibrary.getSelectedRows())
+                    .mapToObj(i -> new Object[]{books.get(i).getID()}).toArray(Object[][]::new);
+            System.out.println(bookIdToDel.length);
             cursorBook.executeMany(
-                    "DELETE FROM Books WHERE ID = ?", listIdBook.toArray(Object[][]::new));
-            books.removeAll(booksSelected);
+                    "DELETE FROM Books WHERE ID = ?", bookIdToDel);
             Actions.fillToTable(tableLibrary, books);
-
         }
     }//GEN-LAST:event_deleleBtnActionPerformed
 
